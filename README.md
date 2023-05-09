@@ -9,6 +9,48 @@ Nadlogar je projekt, ki nastaja v okviru programerskega kluba [Fakultete za mate
 - Urša Pertot, ki je na osnovi tega programa napisala [program v Pythonu](https://github.com/ursa16180/generiranje-nalog/tree/python),
 - podjetje [EBA d.o.o., Ljubljana](http://www.ebadms.com), ki je velikodušno prevzelo sponzorstvo programerskega kluba.
 
+## Programska oprema pri pouku
+
+To je kopija (fork) izvirnega repozitorija, ki smo ga uporabili za demonstracijo pri predmetu Programska oprema pri pouku. V nadaljevanju tega razdelka je opisana namestitev projekta na operacijskem sistemu Windows z nekaj dodatnimi opombami.
+
+Najprej ustvarimo virtualno okolje za python knjižnice. Drugi ukaz je morda potreben pri uporabi PowerShell-a. Procesu z njim dodelimo pravico za poganjanje skript (konkretno, skripte `activate`).
+```
+python -m venv venv
+Set-ExecutionPolicy Unrestricted -Scope Process
+venv/Scripts/activate
+```
+
+Nato namestimo potrebne knjižnice in poženemo migracije, ki so potrebne ob prvem zagonu programa.
+```
+cd nadlogar
+pip install -r requirements\local.txt
+python manage.py makemigrations
+python manage.py migrate
+python manage.py loaddata documents/fixtures/initial.json
+```
+
+Ustvarimo še svojega uporabnika in zaženemo program.
+```
+python manage.py createsuperuser
+python manage.py runserver
+```
+
+Za ponoven zagon uporabimo naslednje ukaze.
+```
+Set-ExecutionPolicy Unrestricted -Scope Process
+venv/Scripts/activate
+cd nadlogar
+python manage.py runserver
+```
+
+Po dodajanju nove datoteke v `nadlogar/problems/models` osvežimo `__init__.py` in poženemo naslednje ukaze.
+```
+python manage.py makemigrations
+python manage.py migrate
+```
+Kot primer novega sklopa nalog smo dodali datoteko [`sistemi_enacb.py`](nadlogar/problems/models/sistemi_enacb.py). Omogoča generiranje nalog za reševanje sistemov linearnih enačb z dvemi ali tremi neznankami (tak tip naloge je v nekoliko drugačni obliki sicer že vključen v sklop Linearna funkcija).
+
+
 ## Navodila za namestitev
 
 Na začetku klonirajte repozitorij ter ustvarite virtualno okolje:
